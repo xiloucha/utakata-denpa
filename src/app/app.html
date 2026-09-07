@@ -16,13 +16,25 @@
 
   </header>
 
+
+  <!-- =========================
+       ON AIR
+  ========================= -->
+
   <section class="on-air">
 
     <span class="lamp"></span>
-    <span>ON AIR</span>
+
+    <span>
+      ON AIR
+    </span>
 
   </section>
 
+
+  <!-- =========================
+       BROADCAST SELECTOR
+  ========================= -->
 
   <section class="broadcast-selector">
 
@@ -35,24 +47,37 @@
       [(ngModel)]="currentBroadcastId"
       (change)="changeBroadcast()"
     >
+
       <option
         *ngFor="let broadcast of broadcasts"
         [value]="broadcast.id"
       >
         {{ broadcast.title }}
       </option>
+
     </select>
+
 
     <button
       class="receive-button"
       (click)="startReceiving()"
       [disabled]="isReceiving"
     >
-      {{ isReceiving ? '受信中…' : '受信する' }}
+
+      {{
+        isReceiving
+          ? '受信中…'
+          : '受信する'
+      }}
+
     </button>
 
   </section>
 
+
+  <!-- =========================
+       BROADCAST
+  ========================= -->
 
   <section class="broadcast">
 
@@ -60,14 +85,18 @@
       LOCAL NEWS
     </p>
 
+
     <h1>
       {{ currentBroadcast.title }}
     </h1>
+
 
     <div
       class="script"
       [class.is-lost]="isLost"
     >
+
+      <!-- 通常のニュース本文 -->
 
       <div
         class="script-line"
@@ -84,6 +113,8 @@
       </div>
 
 
+      <!-- 最後の一文 -->
+
       <div class="last-sentence">
 
         <span
@@ -95,6 +126,8 @@
 
       </div>
 
+
+      <!-- 最終信号 -->
 
       <div class="final-signal">
 
@@ -109,6 +142,10 @@
 
     </div>
 
+
+    <!-- =========================
+         ORIGINAL AUDIO
+    ========================= -->
 
     <audio
       #audioPlayer
@@ -153,11 +190,24 @@
           (click)="togglePlay()"
           [disabled]="!audioDuration"
         >
-          {{ isPlaying ? 'Ⅱ' : '▶' }}
+
+          {{
+            isPlaying
+              ? 'Ⅱ'
+              : '▶'
+          }}
+
         </button>
 
+
         <span class="player-status">
-          {{ isPlaying ? 'RECEIVING' : 'STANDBY' }}
+
+          {{
+            isPlaying
+              ? 'RECEIVING'
+              : 'STANDBY'
+          }}
+
         </span>
 
       </div>
@@ -167,15 +217,172 @@
   </section>
 
 
+  <!-- ==================================================
+       うたかた電波化 2.0
+  ================================================== -->
+
+  <section class="converter">
+
+    <p class="converter-label">
+      UTakata DENPA 2.0
+    </p>
+
+
+    <h2>
+      うたかた電波化する
+    </h2>
+
+
+    <p class="converter-description">
+      あなたの音声を、うたかた電波にします。
+    </p>
+
+
+    <!-- =========================
+         FILE SELECT
+    ========================= -->
+
+    <label class="file-button">
+
+      <span>
+        音声ファイルを選択
+      </span>
+
+      <input
+        type="file"
+        accept="audio/*"
+        (change)="onFileSelected($event)"
+        hidden
+      />
+
+    </label>
+
+
+    <!-- 選択したファイル名 -->
+
+    <p
+      class="selected-file"
+      *ngIf="selectedFileName"
+    >
+      {{ selectedFileName }}
+    </p>
+
+
+    <!-- =========================
+         CORRUPTION CONTROL
+    ========================= -->
+
+    <div
+      class="corruption-control"
+      *ngIf="selectedFile"
+    >
+
+      <div class="corruption-header">
+
+        <span>
+          壊れ度
+        </span>
+
+        <strong>
+          {{ corruptionPercent }}%
+        </strong>
+
+      </div>
+
+
+      <input
+        class="corruption-slider"
+        type="range"
+        min="5"
+        max="80"
+        step="5"
+        [(ngModel)]="corruptionPercent"
+      />
+
+
+      <div class="corruption-description">
+
+        最初はわずかに、
+        時間とともに電波が弱くなります。
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         CONVERT BUTTON
+    ========================= -->
+
+    <button
+      class="convert-button"
+      (click)="convertToUtakata()"
+      [disabled]="!selectedFile || isConverting"
+    >
+
+      {{
+        isConverting
+          ? '電波化しています…'
+          : 'うたかた電波化する'
+      }}
+
+    </button>
+
+
+    <!-- =========================
+         CONVERTED RESULT
+    ========================= -->
+
+    <div
+      class="converted-result"
+      *ngIf="convertedAudioUrl"
+    >
+
+      <p class="converted-title">
+        電波化しました。
+      </p>
+
+
+      <p class="converted-description">
+        うたかた電波になった音声です。
+      </p>
+
+
+      <audio
+        #convertedAudio
+        [src]="convertedAudioUrl"
+        controls
+      >
+      </audio>
+
+
+      <button
+        class="download-button"
+        (click)="downloadConvertedAudio()"
+      >
+        音声を保存
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       FOOTER
+  ========================= -->
+
   <footer>
 
     <span>
       ほとりFM
     </span>
 
+
     <span>
       LOCAL RADIO
     </span>
+
 
     <a
       href="https://xiloucha.github.io/hotori-ss/"

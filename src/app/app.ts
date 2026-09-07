@@ -1,4 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 
@@ -26,6 +31,13 @@ export class App {
   @ViewChild('audioPlayer')
   audioPlayer!: ElementRef<HTMLAudioElement>;
 
+  @ViewChild('convertedAudio')
+  convertedAudio!: ElementRef<HTMLAudioElement>;
+
+  /* ==================================================
+     1.0 RADIO
+  ================================================== */
+
   isReceiving = false;
   isLost = false;
   isPlaying = false;
@@ -34,7 +46,6 @@ export class App {
   audioDuration = 0;
 
   broadcasts: Broadcast[] = [
-
     {
       id: 'sakura',
       title: '桜並木についてのお知らせ',
@@ -70,7 +81,7 @@ export class App {
         'お車でお越しの方はご注意ください。'
       ],
       lastSentence:
-        '以上、ほとり町夏祭りのお知らせでした。'
+        '以上、ほとり町夏祭りのお知らせでした.'
     },
 
     {
@@ -184,32 +195,64 @@ export class App {
       lastSentence:
         '以上、町内からの話題をお伝えしました。'
     }
-
   ];
 
   currentBroadcastId = 'sakura';
 
   displayedScriptLines: ScriptChar[][] = [];
-
   displayedLastSentence: ScriptChar[] = [];
-
-displayedFinalSignal: ScriptChar[] = [];
+  displayedFinalSignal: ScriptChar[] = [];
 
   private interferenceTimer: any;
-
   private interferenceStartTimes: number[] = [];
   private interferenceDurations: number[] = [];
 
+
+  /* ==================================================
+     2.0 UTakata DENPA
+  ================================================== */
+
+  selectedFile: File | null = null;
+  selectedFileName = '';
+
+  isConverting = false;
+
+  convertedAudioUrl = '';
+  convertedAudioBlob: Blob | null = null;
+
+  corruptionPercent = 30;
+
+  private convertedAudioContext?: AudioContext;
+  private convertedSource?: MediaElementAudioSourceNode;
+  private convertedGain?: GainNode;
+
+  private convertedUrlToRevoke = '';
+
+
+  /* ==================================================
+     CURRENT BROADCAST
+  ================================================== */
+
   get currentBroadcast(): Broadcast {
-    return this.broadcasts.find(
-      broadcast =>
-        broadcast.id === this.currentBroadcastId
-    ) ?? this.broadcasts[0];
+
+    return (
+      this.broadcasts.find(
+        broadcast =>
+          broadcast.id ===
+          this.currentBroadcastId
+      ) ?? this.broadcasts[0]
+    );
   }
+
 
   constructor() {
     this.createNormalScript();
   }
+
+
+  /* ==================================================
+     SCRIPT
+  ================================================== */
 
   private createNormalScript(): void {
 
@@ -221,21 +264,24 @@ displayedFinalSignal: ScriptChar[] = [];
             corrupted: false
           }))
       );
-  
+
     this.displayedLastSentence =
-      [...this.currentBroadcast.lastSentence]
-        .map(character => ({
+      [...this.currentBroadcast.lastSentence].map(
+        character => ({
           char: character,
           corrupted: false
-        }));
-  
+        })
+      );
+
     this.displayedFinalSignal =
-      [...'ほとりFMでした。']
-        .map(character => ({
+      [...'ほとりFMでした。'].map(
+        character => ({
           char: character,
           corrupted: false
-        }));
+        })
+      );
   }
+
 
   changeBroadcast(): void {
 
@@ -251,6 +297,7 @@ displayedFinalSignal: ScriptChar[] = [];
       this.audioPlayer?.nativeElement;
 
     if (audio) {
+
       audio.pause();
       audio.currentTime = 0;
       audio.volume = 1;
@@ -259,6 +306,7 @@ displayedFinalSignal: ScriptChar[] = [];
 
     this.createNormalScript();
   }
+
 
   startReceiving(): void {
 
@@ -270,12 +318,14 @@ displayedFinalSignal: ScriptChar[] = [];
 
     audio.currentTime = 0;
     audio.volume = 1;
+
     audio.play();
 
     this.isPlaying = true;
 
     this.startInterference();
   }
+
 
   onAudioLoaded(): void {
 
@@ -286,19 +336,24 @@ displayedFinalSignal: ScriptChar[] = [];
       audio.duration || 0;
   }
 
+
   togglePlay(): void {
 
     const audio =
       this.audioPlayer.nativeElement;
 
     if (audio.paused) {
+
       audio.play();
       this.isPlaying = true;
+
     } else {
+
       audio.pause();
       this.isPlaying = false;
     }
   }
+
 
   seekAudio(event: Event): void {
 
@@ -314,6 +369,7 @@ displayedFinalSignal: ScriptChar[] = [];
     audio.currentTime = time;
     this.currentTime = time;
   }
+
 
   formatTime(seconds: number): string {
 
@@ -339,6 +395,7 @@ displayedFinalSignal: ScriptChar[] = [];
     );
   }
 
+
   onTimeUpdate(): void {
 
     const audio =
@@ -347,24 +404,23 @@ displayedFinalSignal: ScriptChar[] = [];
     this.currentTime =
       audio.currentTime;
 
-    const duration =
-      audio.duration || 37;
-
-    const interferenceBoost =
+    const boost =
       this.getInterferenceTextBoost(
         audio.currentTime
       );
 
     this.updateScriptCorruption(
       audio.currentTime,
-      interferenceBoost
+      boost
     );
 
     this.updateLastLinesCorruption(
       audio.currentTime,
-      interferenceBoost
+      boost
     );
   }
+
+
   private updateScriptCorruption(
     time: number,
     interferenceBoost: number
@@ -372,9 +428,8 @@ displayedFinalSignal: ScriptChar[] = [];
 
     this.displayedScriptLines =
       this.currentBroadcast.lines.map(
-        (line, lineIndex) => {
-
-          return [...line].map(
+        (line, lineIndex) =>
+          [...line].map(
             (character, charIndex) => {
 
               if (
@@ -407,7 +462,9 @@ displayedFinalSignal: ScriptChar[] = [];
                   )
                 ) * 100;
 
-              if (seed < interferenceBoost) {
+              if (
+                seed < interferenceBoost
+              ) {
                 return {
                   char:
                     (charIndex + lineIndex) % 2 === 0
@@ -422,8 +479,7 @@ displayedFinalSignal: ScriptChar[] = [];
                 corrupted: false
               };
             }
-          );
-        }
+          )
       );
   }
 
@@ -441,7 +497,9 @@ displayedFinalSignal: ScriptChar[] = [];
       return [...text].map(
         (character, charIndex) => {
 
-          if (interferenceBoost <= 0) {
+          if (
+            interferenceBoost <= 0
+          ) {
             return {
               char: character,
               corrupted: false
@@ -469,7 +527,9 @@ displayedFinalSignal: ScriptChar[] = [];
               )
             ) * 100;
 
-          if (seed < interferenceBoost) {
+          if (
+            seed < interferenceBoost
+          ) {
             return {
               char:
                 (charIndex + lineIndex) % 2 === 0
@@ -499,6 +559,8 @@ displayedFinalSignal: ScriptChar[] = [];
         101
       );
   }
+
+
   private getInterferenceTextBoost(
     time: number
   ): number {
@@ -527,17 +589,9 @@ displayedFinalSignal: ScriptChar[] = [];
             start
           );
 
-        if (volume >= 1) {
-          return 0;
-        }
-
-        if (volume >= 0.25) {
-          return 18;
-        }
-
-        if (volume >= 0.08) {
-          return 32;
-        }
+        if (volume >= 1) return 0;
+        if (volume >= 0.25) return 18;
+        if (volume >= 0.08) return 32;
 
         return 55;
       }
@@ -545,6 +599,7 @@ displayedFinalSignal: ScriptChar[] = [];
 
     return 0;
   }
+
 
   private startInterference(): void {
 
@@ -560,23 +615,30 @@ displayedFinalSignal: ScriptChar[] = [];
     this.interferenceDurations = [];
 
     const count =
-      4 + Math.floor(Math.random() * 3);
+      4 + Math.floor(
+        Math.random() * 3
+      );
 
-    for (let i = 0; i < count; i++) {
+    for (
+      let i = 0;
+      i < count;
+      i++
+    ) {
 
       const start =
         5 +
         Math.random() *
-        Math.max(duration - 12, 1);
+        Math.max(
+          duration - 12,
+          1
+        );
 
-      const interferenceDuration =
-        1 +
-        Math.random() * 2;
-
-      this.interferenceStartTimes.push(start);
+      this.interferenceStartTimes.push(
+        start
+      );
 
       this.interferenceDurations.push(
-        interferenceDuration
+        1 + Math.random() * 2
       );
     }
 
@@ -587,14 +649,12 @@ displayedFinalSignal: ScriptChar[] = [];
         0
       );
 
-    const finalDuration =
-      2 +
-      Math.random() * 2;
-
-    this.interferenceStartTimes.push(finalStart);
+    this.interferenceStartTimes.push(
+      finalStart
+    );
 
     this.interferenceDurations.push(
-      finalDuration
+      2 + Math.random() * 2
     );
 
     this.interferenceTimer =
@@ -638,6 +698,7 @@ displayedFinalSignal: ScriptChar[] = [];
       }, 50);
   }
 
+
   private interferenceVolume(
     time: number,
     start: number
@@ -647,7 +708,9 @@ displayedFinalSignal: ScriptChar[] = [];
       time - start;
 
     const pattern =
-      Math.floor(elapsed * 7) % 8;
+      Math.floor(
+        elapsed * 7
+      ) % 8;
 
     switch (pattern) {
 
@@ -672,6 +735,7 @@ displayedFinalSignal: ScriptChar[] = [];
     }
   }
 
+
   onAudioEnded(): void {
 
     this.isReceiving = false;
@@ -688,4 +752,831 @@ displayedFinalSignal: ScriptChar[] = [];
       audio.currentTime;
   }
 
+
+  /* ==================================================
+     FILE
+  ================================================== */
+
+  onFileSelected(event: Event): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    /*
+     * 前のプレビュー用AudioContextを破棄
+     */
+
+    if (this.convertedAudioContext) {
+      this.convertedAudioContext.close();
+    }
+
+    this.convertedAudioContext = undefined;
+    this.convertedSource = undefined;
+    this.convertedGain = undefined;
+
+    this.selectedFile = file;
+    this.selectedFileName = file.name;
+
+    this.convertedAudioBlob = null;
+
+    if (this.convertedUrlToRevoke) {
+
+      URL.revokeObjectURL(
+        this.convertedUrlToRevoke
+      );
+
+      this.convertedUrlToRevoke = '';
+    }
+
+    this.convertedAudioUrl = '';
+  }
+
+
+  async convertToUtakata(): Promise<void> {
+
+    if (!this.selectedFile) {
+      return;
+    }
+
+    this.isConverting = true;
+
+    try {
+
+      this.setupConvertedPreview();
+
+    } finally {
+
+      this.isConverting = false;
+    }
+  }
+
+
+  /* ==================================================
+     FAST PREVIEW
+  ================================================== */
+
+  private setupConvertedPreview(): void {
+
+    if (!this.selectedFile) {
+      return;
+    }
+
+    const url =
+      URL.createObjectURL(
+        this.selectedFile
+      );
+
+    this.convertedUrlToRevoke = url;
+
+    this.convertedAudioUrl = url;
+
+    setTimeout(() => {
+
+      this.setupRealtimeAudio();
+
+    }, 100);
+  }
+
+
+  private setupRealtimeAudio(): void {
+
+    const audio =
+      this.convertedAudio?.nativeElement;
+
+    if (!audio) {
+      return;
+    }
+
+    if (this.convertedSource) {
+      return;
+    }
+
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as any).webkitAudioContext;
+
+    if (!AudioContextClass) {
+      return;
+    }
+
+    const context =
+      new AudioContextClass();
+
+    const source =
+      context.createMediaElementSource(
+        audio
+      );
+
+    /*
+     * ==========================================
+     * ラジオ音質
+     * ==========================================
+     *
+     * 低音を少しカット
+     * 高音をカット
+     * 中域を少し強調
+     *
+     * 電話ほど極端にはしない。
+     */
+
+    const highpass =
+      context.createBiquadFilter();
+
+    highpass.type = 'highpass';
+    highpass.frequency.value = 180;
+    highpass.Q.value = 0.7;
+
+    const radioBoost =
+      context.createBiquadFilter();
+
+    radioBoost.type = 'peaking';
+    radioBoost.frequency.value = 1200;
+    radioBoost.Q.value = 0.8;
+    radioBoost.gain.value = 3;
+
+    const lowpass =
+      context.createBiquadFilter();
+
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 4200;
+    lowpass.Q.value = 0.7;
+
+    const gain =
+      context.createGain();
+
+    source
+      .connect(highpass)
+      .connect(radioBoost)
+      .connect(lowpass)
+      .connect(gain)
+      .connect(context.destination);
+
+    this.convertedAudioContext =
+      context;
+
+    this.convertedSource =
+      source;
+
+    this.convertedGain =
+      gain;
+
+    audio.addEventListener(
+      'play',
+      () => {
+
+        context.resume();
+
+        this.startRealtimeCorruption();
+
+      }
+    );
+  }
+
+
+  /* ==================================================
+     REALTIME CORRUPTION
+  ================================================== */
+
+  private startRealtimeCorruption(): void {
+
+    const audio =
+      this.convertedAudio?.nativeElement;
+
+    const gain =
+      this.convertedGain;
+
+    if (!audio || !gain) {
+      return;
+    }
+
+    const duration =
+      audio.duration || 1;
+
+    const update = () => {
+
+      if (audio.paused) {
+
+        gain.gain.value = 1;
+
+        return;
+      }
+
+      const progress =
+        Math.min(
+          audio.currentTime /
+          duration,
+          1
+        );
+
+      const target =
+        this.corruptionPercent / 100;
+
+      const corruption =
+        Math.max(
+          0.03,
+          target *
+          Math.pow(
+            progress,
+            1.35
+          )
+        );
+
+      if (
+        Math.random() <
+        corruption
+      ) {
+
+        const levels = [
+          0,
+          0.08,
+          0.2,
+          0.35,
+          0.55
+        ];
+
+        gain.gain.value =
+          levels[
+            Math.floor(
+              Math.random() *
+              levels.length
+            )
+          ];
+
+      } else {
+
+        gain.gain.value = 1;
+      }
+
+      window.setTimeout(
+        update,
+        70
+      );
+    };
+
+    update();
+  }
+
+
+  /* ==================================================
+     FAST SAVE
+  ================================================== */
+
+  async downloadConvertedAudio(): Promise<void> {
+
+    if (!this.selectedFile) {
+      return;
+    }
+
+    /*
+     * 元音声をデコード
+     */
+
+    const arrayBuffer =
+      await this.selectedFile.arrayBuffer();
+
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as any).webkitAudioContext;
+
+    if (!AudioContextClass) {
+      return;
+    }
+
+    const context =
+      new AudioContextClass();
+
+    const original =
+      await context.decodeAudioData(
+        arrayBuffer
+      );
+
+
+    /*
+     * ==========================================
+     * OfflineAudioContext
+     * ==========================================
+     *
+     * 保存用のラジオフィルターを
+     * リアルタイム再生なしで適用する。
+     */
+
+    const OfflineContextClass =
+      window.OfflineAudioContext ||
+      (window as any).webkitOfflineAudioContext;
+
+    if (!OfflineContextClass) {
+
+      await context.close();
+
+      return;
+    }
+
+    const offlineContext =
+      new OfflineContextClass(
+        original.numberOfChannels,
+        original.length,
+        original.sampleRate
+      );
+
+
+    const source =
+      offlineContext.createBufferSource();
+
+    source.buffer =
+      original;
+
+
+    /*
+     * ラジオっぽい帯域
+     */
+
+    const highpass =
+      offlineContext.createBiquadFilter();
+
+    highpass.type = 'highpass';
+    highpass.frequency.value = 180;
+    highpass.Q.value = 0.7;
+
+
+    const radioBoost =
+      offlineContext.createBiquadFilter();
+
+    radioBoost.type = 'peaking';
+    radioBoost.frequency.value = 1200;
+    radioBoost.Q.value = 0.8;
+    radioBoost.gain.value = 3;
+
+
+    const lowpass =
+      offlineContext.createBiquadFilter();
+
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 4200;
+    lowpass.Q.value = 0.7;
+
+
+    source
+      .connect(highpass)
+      .connect(radioBoost)
+      .connect(lowpass)
+      .connect(
+        offlineContext.destination
+      );
+
+
+    source.start(0);
+
+
+    /*
+     * フィルター後の音声を
+     * 一気にレンダリング。
+     */
+
+    const radioAudio =
+      await offlineContext.startRendering();
+
+
+    /*
+     * ==========================================
+     * 電波の途切れ
+     * ==========================================
+     *
+     * ここが重要。
+     *
+     * 「壊れるかどうか」を
+     * 左右チャンネルごとには決めない。
+     *
+     * 0.08秒の区間ごとに1回だけ判定して、
+     * 左右両方に同じ処理をする。
+     *
+     * これで音が左右に飛ばない。
+     */
+
+    const output =
+      context.createBuffer(
+        radioAudio.numberOfChannels,
+        radioAudio.length,
+        radioAudio.sampleRate
+      );
+
+
+    const chunkSize =
+      Math.floor(
+        radioAudio.sampleRate * 0.08
+      );
+
+
+    const finalCorruption =
+      this.corruptionPercent / 100;
+
+
+    /*
+     * 区間ごとの「壊れるか」を
+     * 先に作っておく。
+     *
+     * これを全チャンネルで共有する。
+     */
+
+    const chunkCount =
+      Math.ceil(
+        radioAudio.length /
+        chunkSize
+      );
+
+
+    const chunkCorruption: boolean[] = [];
+    const chunkFade: number[] = [];
+
+
+    for (
+      let chunk = 0;
+      chunk < chunkCount;
+      chunk++
+    ) {
+
+      const start =
+        chunk * chunkSize;
+
+      const progress =
+        start /
+        radioAudio.length;
+
+
+      const corruption =
+        Math.max(
+          0.03,
+          finalCorruption *
+          Math.pow(
+            progress,
+            1.35
+          )
+        );
+
+
+      const corrupt =
+        Math.random() <
+        corruption;
+
+
+      chunkCorruption.push(
+        corrupt
+      );
+
+
+      chunkFade.push(
+        corrupt
+          ? Math.random() * 0.35
+          : 1
+      );
+    }
+
+
+    /*
+     * 左右チャンネルを処理。
+     *
+     * ただし、壊れるタイミングは
+     * 全チャンネル共通。
+     */
+
+    for (
+      let channel = 0;
+      channel < radioAudio.numberOfChannels;
+      channel++
+    ) {
+
+      const input =
+        radioAudio.getChannelData(
+          channel
+        );
+
+      const result =
+        output.getChannelData(
+          channel
+        );
+
+
+      for (
+        let chunk = 0;
+        chunk < chunkCount;
+        chunk++
+      ) {
+
+        const start =
+          chunk * chunkSize;
+
+        const end =
+          Math.min(
+            start + chunkSize,
+            input.length
+          );
+
+
+        const corrupt =
+          chunkCorruption[chunk];
+
+        const fade =
+          chunkFade[chunk];
+
+
+        if (corrupt) {
+
+          /*
+           * 壊れる。
+           *
+           * 左右とも同じタイミングで
+           * 同じように音量が落ちる。
+           */
+
+          for (
+            let i = start;
+            i < end;
+            i++
+          ) {
+
+            result[i] =
+              input[i] * fade;
+          }
+
+        } else {
+
+          /*
+           * 正常。
+           */
+
+          for (
+            let i = start;
+            i < end;
+            i++
+          ) {
+
+            result[i] =
+              input[i];
+          }
+        }
+      }
+    }
+
+
+    /*
+     * ==========================================
+     * WAVとして保存
+     * ==========================================
+     */
+
+    const wav =
+      this.audioBufferToWav(
+        output
+      );
+
+
+    const blob =
+      new Blob(
+        [wav],
+        {
+          type: 'audio/wav'
+        }
+      );
+
+
+    this.convertedAudioBlob =
+      blob;
+
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    const originalName =
+      this.selectedFile.name
+        .replace(
+          /\.[^/.]+$/,
+          ''
+        );
+
+
+    const link =
+      document.createElement('a');
+
+    link.href = url;
+
+    link.download =
+      `utakata-denpa-${originalName}.wav`;
+
+    link.click();
+
+
+    setTimeout(() => {
+
+      URL.revokeObjectURL(url);
+
+    }, 1000);
+
+
+    await context.close();
+  }
+
+
+  /* ==================================================
+     AUDIO BUFFER → WAV
+  ================================================== */
+
+  private audioBufferToWav(
+    buffer: AudioBuffer
+  ): ArrayBuffer {
+
+    const numberOfChannels =
+      buffer.numberOfChannels;
+
+    const sampleRate =
+      buffer.sampleRate;
+
+    const length =
+      buffer.length *
+      numberOfChannels *
+      2;
+
+    const arrayBuffer =
+      new ArrayBuffer(
+        44 + length
+      );
+
+    const view =
+      new DataView(
+        arrayBuffer
+      );
+
+
+    this.writeString(
+      view,
+      0,
+      'RIFF'
+    );
+
+
+    view.setUint32(
+      4,
+      36 + length,
+      true
+    );
+
+
+    this.writeString(
+      view,
+      8,
+      'WAVE'
+    );
+
+
+    this.writeString(
+      view,
+      12,
+      'fmt '
+    );
+
+
+    view.setUint32(
+      16,
+      16,
+      true
+    );
+
+
+    view.setUint16(
+      20,
+      1,
+      true
+    );
+
+
+    view.setUint16(
+      22,
+      numberOfChannels,
+      true
+    );
+
+
+    view.setUint32(
+      24,
+      sampleRate,
+      true
+    );
+
+
+    view.setUint32(
+      28,
+      sampleRate *
+      numberOfChannels *
+      2,
+      true
+    );
+
+
+    view.setUint16(
+      32,
+      numberOfChannels * 2,
+      true
+    );
+
+
+    view.setUint16(
+      34,
+      16,
+      true
+    );
+
+
+    this.writeString(
+      view,
+      36,
+      'data'
+    );
+
+
+    view.setUint32(
+      40,
+      length,
+      true
+    );
+
+
+    let offset = 44;
+
+
+    for (
+      let i = 0;
+      i < buffer.length;
+      i++
+    ) {
+
+      for (
+        let channel = 0;
+        channel < numberOfChannels;
+        channel++
+      ) {
+
+        const sample =
+          buffer.getChannelData(
+            channel
+          )[i];
+
+
+        const clamped =
+          Math.max(
+            -1,
+            Math.min(
+              1,
+              sample
+            )
+          );
+
+
+        const value =
+          clamped < 0
+            ? clamped * 0x8000
+            : clamped * 0x7fff;
+
+
+        view.setInt16(
+          offset,
+          value,
+          true
+        );
+
+
+        offset += 2;
+      }
+    }
+
+
+    return arrayBuffer;
+  }
+
+
+  private writeString(
+    view: DataView,
+    offset: number,
+    value: string
+  ): void {
+
+    for (
+      let i = 0;
+      i < value.length;
+      i++
+    ) {
+
+      view.setUint8(
+        offset + i,
+        value.charCodeAt(i)
+      );
+    }
+  }
 }

@@ -11,11 +11,17 @@ body {
   margin: 0;
 }
 
+
+/* =========================
+   BASE
+========================= */
+
 .radio {
   min-height: 100vh;
-  padding: 32px 20px;
+  padding: 32px 20px 40px;
   background: #28202d;
   color: #f5eadf;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -24,6 +30,7 @@ body {
     sans-serif;
 }
 
+
 /* =========================
    HEADER
 ========================= */
@@ -31,9 +38,11 @@ body {
 .station-header {
   max-width: 720px;
   margin: 0 auto 28px;
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
   text-align: left;
 }
 
@@ -46,18 +55,23 @@ body {
 
 .station-name {
   margin-top: 0.25rem;
+
   font-size: 0.8rem;
   letter-spacing: 0.12em;
+
   white-space: nowrap;
 }
 
 .frequency {
   margin-top: 0.25rem;
+
   font-size: 0.75rem;
   letter-spacing: 0.08em;
+
   white-space: nowrap;
   opacity: 0.65;
 }
+
 
 /* =========================
    ON AIR
@@ -66,23 +80,35 @@ body {
 .on-air {
   max-width: 720px;
   margin: 0 auto 18px;
+
   display: flex;
   align-items: center;
+
   gap: 9px;
+
   color: #f28c5b;
+
   font-size: 0.75rem;
   font-weight: 700;
+
   letter-spacing: 0.16em;
 }
 
 .lamp {
   width: 8px;
   height: 8px;
+
   border-radius: 50%;
+
   background: #f28c5b;
-  box-shadow: 0 0 12px rgba(242, 140, 91, 0.7);
-  animation: blink 1.8s ease-in-out infinite;
+
+  box-shadow:
+    0 0 12px rgba(242, 140, 91, 0.7);
+
+  animation:
+    blink 1.8s ease-in-out infinite;
 }
+
 
 /* =========================
    BROADCAST SELECTOR
@@ -95,23 +121,36 @@ body {
 
 .broadcast-selector label {
   display: block;
+
   margin-bottom: 8px;
-  color: rgba(245, 234, 223, 0.55);
+
+  color:
+    rgba(245, 234, 223, 0.55);
+
   font-size: 0.72rem;
   letter-spacing: 0.12em;
 }
 
 .broadcast-selector select {
   width: 100%;
+
   padding: 12px 14px;
-  border: 1px solid rgba(242, 140, 91, 0.35);
+
+  border:
+    1px solid
+    rgba(242, 140, 91, 0.35);
+
   border-radius: 10px;
+
   background: #3a2e40;
   color: #f5eadf;
+
   font-size: 0.9rem;
   font-family: inherit;
+
   margin-bottom: 4px;
 }
+
 
 /* =========================
    BROADCAST
@@ -120,27 +159,43 @@ body {
 .broadcast {
   max-width: 720px;
   margin: 0 auto;
+
   padding: 28px;
-  border: 1px solid rgba(242, 140, 91, 0.25);
+
+  border:
+    1px solid
+    rgba(242, 140, 91, 0.25);
+
   border-radius: 18px;
+
   background: #3a2e40;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+
+  box-shadow:
+    0 18px 50px
+    rgba(0, 0, 0, 0.2);
 }
 
 .broadcast-label {
   margin: 0 0 14px;
+
   color: #f28c5b;
+
   font-size: 0.72rem;
   font-weight: 700;
+
   letter-spacing: 0.16em;
 }
 
 h1 {
   margin: 0 0 26px;
-  font-size: clamp(1.35rem, 5vw, 2rem);
+
+  font-size:
+    clamp(1.35rem, 5vw, 2rem);
+
   line-height: 1.5;
   font-weight: 700;
 }
+
 
 /* =========================
    SCRIPT
@@ -148,10 +203,14 @@ h1 {
 
 .script {
   margin: 0 0 28px;
+
   font-size: 0.98rem;
   line-height: 2;
+
   letter-spacing: 0.03em;
+
   color: #eadfe8;
+
   overflow: hidden;
 }
 
@@ -171,12 +230,14 @@ h1 {
 
 .final-signal {
   margin-top: 0.4em;
+
   letter-spacing: 0.08em;
 }
 
 .last-sentence,
 .final-signal {
-  transition: opacity 0.2s ease;
+  transition:
+    opacity 0.2s ease;
 }
 
 .is-lost .last-sentence,
@@ -184,22 +245,38 @@ h1 {
   letter-spacing: 0.08em;
 }
 
+
 /* =========================
    GLITCH
 ========================= */
 
 .glitch-square {
   display: inline-block;
+
   color: #f28c5b;
-  animation: interference-square 0.22s steps(2, end) infinite;
+
+  animation:
+    interference-square
+    0.22s
+    steps(2, end)
+    infinite;
+
   transform-origin: center;
+
   position: relative;
   left: 0;
 }
-.is-lost .last-sentence .glitch-square,
-.is-lost .final-signal .glitch-square {
+
+.is-lost
+.last-sentence
+.glitch-square,
+
+.is-lost
+.final-signal
+.glitch-square {
   color: #f28c5b !important;
 }
+
 
 /* =========================
    RECEIVE BUTTON
@@ -207,17 +284,30 @@ h1 {
 
 .receive-button {
   display: block;
+
   width: 100%;
+
   margin: 0 0 18px;
+
   padding: 14px 20px;
-  border: 1px solid #f28c5b;
+
+  border:
+    1px solid
+    #f28c5b;
+
   border-radius: 10px;
+
   background: transparent;
+
   color: #f28c5b;
+
   font-size: 0.9rem;
   font-weight: 700;
+
   letter-spacing: 0.14em;
+
   cursor: pointer;
+
   transition:
     background 0.2s ease,
     color 0.2s ease;
@@ -232,52 +322,83 @@ h1 {
   transform: scale(0.98);
 }
 
+.receive-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+
 /* =========================
    RADIO PLAYER
 ========================= */
 
 .radio-player {
   margin-top: 20px;
+
   padding: 16px 0 0;
 }
 
 .player-time {
   display: flex;
+
   justify-content: space-between;
+
   margin-bottom: 8px;
-  color: rgba(245, 234, 223, 0.55);
+
+  color:
+    rgba(245, 234, 223, 0.55);
+
   font-size: 0.72rem;
-  font-variant-numeric: tabular-nums;
+
+  font-variant-numeric:
+    tabular-nums;
+
   letter-spacing: 0.08em;
 }
 
 .seek-bar {
   display: block;
+
   width: 100%;
   height: 36px;
+
   margin: 0;
   padding: 0;
+
   cursor: pointer;
+
   accent-color: #f28c5b;
 }
 
 .player-controls {
   display: flex;
+
   align-items: center;
+
   gap: 14px;
+
   margin-top: 10px;
 }
 
 .play-button {
   width: 52px;
   height: 44px;
+
   padding: 0;
-  border: 1px solid #f28c5b;
+
+  border:
+    1px solid
+    #f28c5b;
+
   border-radius: 10px;
+
   background: transparent;
+
   color: #f28c5b;
+
   font-size: 1rem;
   font-weight: 700;
+
   cursor: pointer;
 }
 
@@ -291,9 +412,12 @@ h1 {
 }
 
 .player-status {
-  color: rgba(245, 234, 223, 0.45);
+  color:
+    rgba(245, 234, 223, 0.45);
+
   font-size: 0.65rem;
   font-weight: 700;
+
   letter-spacing: 0.14em;
 }
 
@@ -301,19 +425,389 @@ audio {
   display: none;
 }
 
+
+/* ==================================================
+   UTakata DENPA 2.0
+================================================== */
+
+.converter {
+  max-width: 720px;
+
+  margin: 28px auto 0;
+
+  padding: 28px;
+
+  border:
+    1px solid
+    rgba(242, 140, 91, 0.25);
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #3a2e40,
+      #34293a
+    );
+
+  box-shadow:
+    0 18px 50px
+    rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================
+   CONVERTER HEADER
+========================= */
+
+.converter-label {
+  margin: 0 0 12px;
+
+  color: #f28c5b;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
+}
+
+.converter h2 {
+  margin: 0;
+
+  font-size:
+    clamp(1.35rem, 5vw, 1.8rem);
+
+  line-height: 1.5;
+}
+
+.converter-description {
+  margin: 10px 0 22px;
+
+  color:
+    rgba(245, 234, 223, 0.55);
+
+  font-size: 0.85rem;
+
+  line-height: 1.8;
+}
+
+
+/* =========================
+   FILE BUTTON
+========================= */
+
+.file-button {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 52px;
+
+  padding: 14px 20px;
+
+  border:
+    1px solid
+    rgba(242, 140, 91, 0.6);
+
+  border-radius: 10px;
+
+  background:
+    rgba(242, 140, 91, 0.04);
+
+  color: #f5eadf;
+
+  font-size: 0.85rem;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.file-button:hover {
+  background:
+    rgba(242, 140, 91, 0.1);
+
+  border-color:
+    #f28c5b;
+}
+
+.file-button:active {
+  transform: scale(0.98);
+}
+
+
+/* =========================
+   SELECTED FILE
+========================= */
+
+.selected-file {
+  margin: 12px 0 0;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  background:
+    rgba(0, 0, 0, 0.12);
+
+  color:
+    rgba(245, 234, 223, 0.65);
+
+  font-size: 0.75rem;
+
+  word-break: break-all;
+}
+
+
+/* =========================
+   CORRUPTION CONTROL
+========================= */
+
+.corruption-control {
+  margin-top: 24px;
+
+  padding: 18px;
+
+  border:
+    1px solid
+    rgba(245, 234, 223, 0.08);
+
+  border-radius: 12px;
+
+  background:
+    rgba(0, 0, 0, 0.08);
+}
+
+.corruption-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+
+  font-size: 0.8rem;
+
+  letter-spacing: 0.08em;
+}
+
+.corruption-header strong {
+  color: #f28c5b;
+
+  font-size: 0.9rem;
+}
+
+.corruption-slider {
+  display: block;
+
+  width: 100%;
+  height: 36px;
+
+  margin: 0;
+
+  cursor: pointer;
+
+  accent-color: #f28c5b;
+}
+
+.corruption-description {
+  margin-top: 8px;
+
+  color:
+    rgba(245, 234, 223, 0.4);
+
+  font-size: 0.68rem;
+
+  line-height: 1.7;
+}
+
+
+/* =========================
+   CONVERT BUTTON
+========================= */
+
+.convert-button {
+  width: 100%;
+
+  margin-top: 18px;
+
+  padding: 15px 20px;
+
+  border:
+    1px solid
+    #f28c5b;
+
+  border-radius: 10px;
+
+  background: #f28c5b;
+
+  color: #28202d;
+
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+
+  cursor: pointer;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.1s ease;
+}
+
+.convert-button:hover {
+  opacity: 0.88;
+}
+
+.convert-button:active {
+  transform: scale(0.98);
+}
+
+.convert-button:disabled {
+  opacity: 0.35;
+
+  cursor: default;
+}
+
+
+/* =========================
+   CONVERTED RESULT
+========================= */
+
+.converted-result {
+  margin-top: 26px;
+
+  padding-top: 22px;
+
+  border-top:
+    1px solid
+    rgba(245, 234, 223, 0.1);
+}
+
+.converted-title {
+  margin: 0;
+
+  color: #f28c5b;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.converted-description {
+  margin: 7px 0 16px;
+
+  color:
+    rgba(245, 234, 223, 0.5);
+
+  font-size: 0.75rem;
+}
+
+
+/* =========================
+   CONVERTED AUDIO
+========================= */
+
+.converted-result audio {
+  display: block;
+
+  width: 100%;
+
+  height: 44px;
+
+  margin: 0 0 16px;
+}
+
+
+/* =========================
+   DOWNLOAD
+========================= */
+
+.download-button {
+  width: 100%;
+
+  padding: 13px 20px;
+
+  border:
+    1px solid
+    rgba(245, 234, 223, 0.25);
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #f5eadf;
+
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.download-button:hover {
+  background:
+    rgba(245, 234, 223, 0.06);
+
+  border-color:
+    rgba(245, 234, 223, 0.45);
+}
+
+.download-button:active {
+  transform: scale(0.98);
+}
+
+
 /* =========================
    FOOTER
 ========================= */
 
 footer {
   max-width: 720px;
+
   margin: 22px auto 0;
+
   display: flex;
+
   justify-content: space-between;
-  color: rgba(245, 234, 223, 0.4);
+
+  color:
+    rgba(245, 234, 223, 0.4);
+
   font-size: 0.65rem;
+
   letter-spacing: 0.12em;
 }
+
+.hotori-link {
+  color: inherit;
+
+  text-decoration: none;
+
+  opacity: 0.45;
+
+  transition:
+    opacity 0.2s ease;
+}
+
+.hotori-link:hover {
+  opacity: 0.8;
+}
+
 
 /* =========================
    ANIMATION
@@ -331,17 +825,21 @@ footer {
   }
 }
 
+
 @keyframes interference-square {
 
   0%,
   100% {
-    transform: translateY(0);
+    transform:
+      translateY(0);
   }
 
   50% {
-    transform: translateY(-1px);
+    transform:
+      translateY(-1px);
   }
 }
+
 
 /* =========================
    MOBILE
@@ -350,42 +848,66 @@ footer {
 @media (max-width: 600px) {
 
   .radio {
-    padding: 24px 16px;
+    padding:
+      24px 16px 32px;
   }
+
 
   .station-header {
     margin-bottom: 24px;
   }
 
+
   .app-title {
     font-size: 1.5rem;
   }
+
 
   .station-name {
     font-size: 0.8rem;
   }
 
+
   .frequency {
     font-size: 0.7rem;
   }
 
+
   .broadcast {
     padding: 22px 18px;
+
     border-radius: 14px;
   }
 
+
   .script {
     font-size: 0.92rem;
+
     line-height: 1.9;
   }
-}
-.hotori-link {
-  color: inherit;
-  text-decoration: none;
-  opacity: 0.45;
-  transition: opacity 0.2s ease;
-}
 
-.hotori-link:hover {
-  opacity: 0.8;
+
+  .converter {
+    padding: 22px 18px;
+
+    border-radius: 14px;
+  }
+
+
+  .converter h2 {
+    font-size: 1.4rem;
+  }
+
+
+  .corruption-control {
+    padding: 15px;
+  }
+
+
+  footer {
+    gap: 12px;
+
+    font-size: 0.6rem;
+  }
+
 }
