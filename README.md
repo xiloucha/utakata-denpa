@@ -1,59 +1,95 @@
-# UtakataDenpa
+# Utakata Denpa
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.6.
+A town that may exist somewhere.
+Or perhaps a town that exists nowhere at all.
 
-## Development server
+Hotori Town.
 
-To start a local development server, run:
+From a small local radio station in that town,
+a slightly unstable FM broadcast reaches us.
 
-```bash
-ng serve
-```
+When was this broadcast made?
+We don't know.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+And yet, we are listening to it now.
 
-## Code scaffolding
+We can hear it.
+The voices come through, then disappear,
+breaking up somewhere between the signal and us.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Still, somehow, we can understand what they are saying.
 
-```bash
-ng generate component component-name
-```
+Little by little, we begin to understand this town.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Maybe it is a town we know.
+Maybe we have been there before.
 
-```bash
-ng generate --help
-```
+For a moment,
+we might even mistake it for a place from our own memory.
 
-## Building
+But the signal slowly begins to fade.
 
-To build the project run:
+The voices break apart.
+The information disappears.
+The town becomes harder and harder to grasp.
 
-```bash
-ng build
-```
+And sometimes, eventually,
+nothing can be heard at all.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Just like a fleeting moment.
 
-## Running unit tests
+A radio signal arrives from somewhere unknown,
+and we catch it for only this one moment.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Then, before it disappears,
+we find ourselves immersed in a quiet sense of nostalgia.
 
-```bash
-ng test
-```
+That is what Utakata Denpa is.
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+# うたかた電波
 
-```bash
-ng e2e
-```
+どこかにあるかもしれない。
+でも、どこにもないかもしれない町、ほとり町。
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+そこにある小さなラジオ局から、
+少し不安定なFM放送が流れてくる。
 
-## Additional Resources
+いつの放送だろう。
+わからない。
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+でも、私たちは今、それを聞いている。
+
+聞こえる。
+声が聞こえる。
+でも、電波の向こうで、ところどころ途切れている。
+
+それでも、なんとなく何を言っているのかわかる。
+
+少しずつ、この町のことがわかってくる。
+
+もしかしたら、私の知っている町かもしれない。
+もしかしたら、昔どこかで訪れた町かもしれない。
+
+そんなふうに、
+自分の記憶の中にある場所と錯覚することもできる。
+
+けれど、電波は少しずつ弱くなっていく。
+
+声が途切れる。
+情報が壊れていく。
+町の輪郭が、少しずつわからなくなっていく。
+
+そして最後には、
+何も聞こえなくなることもある。
+
+まさに、うたかた。
+
+どこからともなくやってきた電波を、
+この一瞬だけ受信する。
+
+そして、消えてしまう前に、
+ふとした郷愁に浸る。
+
+そんなアプリです。
